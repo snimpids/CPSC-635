@@ -15,10 +15,11 @@ F = f(t);
 % H = repmat(M,3)
 H = zeros(16,16);
 
-for j = 1:2:16
-    for i = 1:8
-        if j == i+1 || i == j
-            H(i,j) = 1
-        end;
-    end;
+for i = 1:8
+    H(i, i+i-1) = 1;
+    H(i, i+i) = 1;
+    H(i+8, i+i-1) = -1;
+    H(i+8, i+i) = 1;
 end;
+
+H = 0.5*H;
