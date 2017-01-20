@@ -1,25 +1,42 @@
+%% Haar decomposition of noisy sine curve.
 clear;
 
+% Setting parameters.
 T = 1024;
+N = 5;
 
-k = 1:T;
-
+% Setting domain and generating noisy sine data.
 t = (0:2*pi/(T-1):2*pi);
-x = (1:T);
-f = @(t) sin(t)+randn(1,T)/10;
+f = sin(t)+randn(1,T)/10;
 
-F = f(t);
+% Obtaining the H matrix.
+H = haarM(T,N);
 
-% M = 0.5*[1,1,0,0;0,0,1,1;-1,1,0,0;0,0,-1,1];
-% 
-% H = repmat(M,3)
-H = zeros(16,16);
+% Performing the Haar decompositions.
+F = H*f';
 
-for i = 1:8
-    H(i, i+i-1) = 1;
-    H(i, i+i) = 1;
-    H(i+8, i+i-1) = -1;
-    H(i+8, i+i) = 1;
-end;
+% Plotting the result.
+subplot(2,1,1);plot(t,F); axis([0, 2*pi, (min(F)-0.1), (max(F)+0.1)]);
+title('5 Haar decompositions of a noisy sine curve');
 
-H = 0.5*H;
+%% Haar composition
+% Here we compose the high frequency data from above with a noisy cosine
+% curve.
+
+% Setting up the domain and generating noisy cosine data.
+U = 32;
+u = (0:2*pi/(U*U-1):2*pi/U);
+g = cos(u)+randn(1,U)/10;
+
+% Appending the high frequency sine noise to the cosine curve.
+G = zeros(1,T);
+G(1:U) = g; 
+G(U+1:T) = F(U+1:T);
+
+% Performing the composition.
+HG = inv(H)*G';
+
+% Plotting the result.
+subplot(2,1,2);plot(t,HG);axis([0,2*pi,min(HG),max(HG)]);
+title({['5 Haar compositions of noisy cosine curve with'],...
+    ['high frequency noisy sine curve data']});
