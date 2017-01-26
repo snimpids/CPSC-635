@@ -2,7 +2,7 @@ function H = haarM(T,N)
 
 %   haarM.m: Takes in variable T, which is the length of the data vector,
 %            and variable n, which is the total number of decompositions to 
-%            be performed.
+%            be performed. Returns Haar matrix of size TxT.
 
 HArray = zeros(T,T,N);
 
